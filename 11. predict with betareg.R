@@ -23,6 +23,12 @@ car.predict <- predictITHfromBeta(rawData = car.raw, dataInfo = car.info, predic
 car.predictedITH <- car.predict$predictedITH
 car.predict$plot
 summary(lm(actual ~ predicted, data=car.predictedITH))
+betaPredictPlot1 <- annotate_figure(plot_grid(car.predict$plot, ncol=1), 
+                                    left = text_grob('CNAdf - predicted', rot = 90, size = 28, vjust = 1),
+                                    bottom = text_grob('CNAdf - actual', size = 28, vjust = 0))
+jpeg('tempfig.jpeg', width = (20), height = (20), units = 'cm', res = 300)
+betaPredictPlot1
+dev.off()
 
 # predict validation cohort
 validationCar.predict <- predictITHfromBeta(rawData = validationCar.raw, dataInfo = validationCar.info, predictors = hg19predictors,title="Validation",  
@@ -30,6 +36,12 @@ validationCar.predict <- predictITHfromBeta(rawData = validationCar.raw, dataInf
 validationCar.predictedITH <- validationCar.predict$predictedITH
 validationCar.predict$plot
 summary(lm(actual ~ predicted, data=validationCar.predictedITH))
+betaPredictPlot1 <- annotate_figure(plot_grid(validationCar.predict$plot, ncol=1), 
+                                    left = text_grob('CNAdf - predicted', rot = 90, size = 28, vjust = 1),
+                                    bottom = text_grob('CNAdf - actual', size = 28, vjust = 0))
+jpeg('tempfig.jpeg', width = (20), height = (20), units = 'cm', res = 300)
+betaPredictPlot1
+dev.off()
 
 # plot training and validation together  
 betaPredictPlot1 <- annotate_figure(plot_grid(car.predict$plot, validationCar.predict$plot, ncol=2), 
@@ -41,16 +53,45 @@ betaPredictPlot1
 dev.off()
 
 # predict tracerx cohort
-tracerx.predict <- predictITHfromBeta(rawData = tracerx.raw, dataInfo = tracerx.info, predictors = hg19predictors,title=NULL,  
+tracerx.predict <- predictITHfromBeta(rawData = tracerx.raw, dataInfo = tracerx.info, predictors = hg19predictors,title="NSCLC",  
                                             actualITH = tracerx.actualITH, beta = beta)
 tracerx.predictedITH <- tracerx.predict$predictedITH
 tracerx.predict$plot
 
 betaPredictPlot2 <- annotate_figure(plot_grid(tracerx.predict$plot, ncol=1), 
-                                    left = text_grob('CNA diversity', rot = 90, size = 28, vjust = 1),
-                                    bottom = text_grob('Predicted CNA diversity', size = 28, vjust = 0))
+                                    left = text_grob('CNAdf - predicted', rot = 90, size = 28, vjust = 1),
+                                    bottom = text_grob('CNAdf - actual', size = 28, vjust = 0))
 
-jpeg('tempfig.jpeg', width = (3*37.795*4.8), height = (3*37.795*4.19))
+#jpeg('tempfig.jpeg', width = (3*37.795*4.8), height = (3*37.795*4.19))
+jpeg('tempfig.jpeg', width = (20), height = (20), units = 'cm', res = 300)
+betaPredictPlot2
+dev.off()
+
+# predict tracerx cohort no staqge 1
+stage <- read_excel("~/Documents/CNA/Github//Data/TracerX/cn_data.xlsx", sheet = 1, skip = 1)
+stage <- stage[,c(1,2)]
+stage$Stage <- substr(stage$Stage, 1, 1)
+stage23NSCLC <- stage$TRACERxID[which(stage$Stage!=1)]
+stage23NSCLC.raw <- tracerx.raw[,which(substr(colnames(tracerx.raw), 1, nchar(colnames(tracerx.raw))-3) %in% stage23NSCLC)]
+stage23NSCLC.raw <- cbind(tracerx.raw[,c(1:3)], stage23NSCLC.raw)
+stage23NSCLC.info <- PullDataInfo(stage23NSCLC.raw)
+stage23NSCLC.diversity <- PullDataDiversity(rawdata = stage23NSCLC.raw, dataInfo = stage23NSCLC.info)
+stage23NSCLC.actualITH <- data.frame(patient = lapply(data.frame(patient=stage23NSCLC.info$patientIDs), rep, stage23NSCLC.info$sampPerPatient),
+                                sample = stage23NSCLC.info$sampleIDs,
+                                actual = lapply(data.frame(actual=stage23NSCLC.diversity$pic.frac$pic.frac), rep, stage23NSCLC.info$sampPerPatient))
+
+
+stage23NSCLC.predict <- predictITHfromBeta(rawData = stage23NSCLC.raw, dataInfo = stage23NSCLC.info, predictors = hg19predictors,title="NSCLC (stage 2/3)",  
+                                      actualITH = stage23NSCLC.actualITH, beta = beta)
+stage23NSCLC.predictedITH <- stage23NSCLC.predict$predictedITH
+stage23NSCLC.predict$plot
+
+betaPredictPlot2 <- annotate_figure(plot_grid(stage23NSCLC.predict$plot, ncol=1), 
+                                    left = text_grob('CNAdf - predicted', rot = 90, size = 28, vjust = 1),
+                                    bottom = text_grob('CNAdf - actual', size = 28, vjust = 0))
+
+#jpeg('tempfig.jpeg', width = (3*37.795*4.8), height = (3*37.795*4.19))
+jpeg('tempfig.jpeg', width = (20), height = (20), units = 'cm', res = 300)
 betaPredictPlot2
 dev.off()
 
@@ -62,10 +103,10 @@ ad.predict$plot
 summary(lm(actual ~ predicted, data=ad.predictedITH))
 
 betaPredictPlot3 <- annotate_figure(plot_grid(ad.predict$plot, ncol=1), 
-                                    left = text_grob('CNA diversity', rot = 90, size = 28, vjust = 1),
-                                    bottom = text_grob('Predicted CNA diversity', size = 28, vjust = 0))
-
-jpeg('tempfig.jpeg', width = (3*37.795*4.8), height = (3*37.795*4.19))
+                                    left = text_grob('CNAdf - predicted', rot = 90, size = 28, vjust = 1),
+                                    bottom = text_grob('CNAdf - actual', size = 28, vjust = 0))
+#jpeg('tempfig.jpeg', width = (3*37.795*4.8), height = (3*37.795*4.19))
+jpeg('tempfig.jpeg', width = (20), height = (20), units = 'cm', res = 300)
 betaPredictPlot3
 dev.off()
 
@@ -75,6 +116,48 @@ coad.predict <- predictITHfromBeta(rawData = coad.raw, dataInfo = coad.info, pre
 coad.predictedITH <- coad.predict$predictedITH
 coad.predictedITH <- cbind(TCGA_barcode=substr(coad.info$patientIDs,1,12), coad.predictedITH)
 
+# predict READ
+read.predict <- predictITHfromBeta(rawData = read.raw, dataInfo = read.info, predictors = hg19predictors, title=NULL,  
+                                   actualITH = NA, beta = beta)
+read.predictedITH <- read.predict$predictedITH
+read.predictedITH <- cbind(TCGA_barcode=substr(read.info$patientIDs,1,12), read.predictedITH)
+
+
+# freq of predictors in ad and car
+x <- ad.raw
+x <- car.raw
+rownames(x) <- 1:nrow(x)
+x <- x[hg19predictors$bin,-c(1:3)]
+colnames(x)[which(colnames(x)=="A12.1.1")] <- "A12.2"
+x$MCR <- rownames(x)
+x <- melt(x, id='MCR')
+colnames(x) <- c('MCR',"Sample","CNA")
+x$patient <- sub("\\..*", "",x$Sample)
+x$CNA <- ifelse(x$CNA==1, "loss", ifelse(x$CNA==2,"diploid","gain"))
+x$chr <- hg19predictors[match(x$MCR, hg19predictors$bin), 2]
+y <- ggplot(x, aes(x=Sample, y=MCR, fill = as.factor(CNA))) +
+  geom_tile(color="black") +
+  scale_fill_manual(name = "CNA",values = c(alpha("#CCCCCC",0.2),"#B40F20","#046C9A")) +
+  facet_grid(cols=vars(patient), rows=vars(chr), scales = 'free', space = 'free') +
+  theme_custom() +
+  theme(
+    legend.position = "top",
+    panel.spacing = unit(0.2, "lines"),
+    panel.background = element_blank(),
+    panel.border=element_blank(),
+    #axis.text.x = element_text(angle=90, vjust=0.5, hjust=),
+    axis.text.x = element_blank(),
+    #strip.text.x = element_blank(),
+    strip.text.x = element_text(size=28, angle=90),
+    strip.text.y = element_text(size=28),
+    strip.background.y = element_rect(colour = 'white', fill=NULL),
+    strip.background.x = element_rect(colour = 'white', fill=NULL),
+    legend.text = element_text(size=28),
+    legend.title = element_text(size=28)) 
+#jpeg('tempfig.jpeg', width = (35), height = (35), units = 'cm', res = 300)
+jpeg('tempfig.jpeg', width = (65), height = (35), units = 'cm', res = 300)
+y
+dev.off()
 
 # save
 saveRDS(hg19predictors, "~/Documents/CNA/Github/singleBiopsyITH/Data/hg19predictors.rds")

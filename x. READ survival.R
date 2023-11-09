@@ -1,7 +1,7 @@
 READ_survival <- READ_clinical
 
 # Add predicted ITH back into COAD_clinical
-READ_survival$ITH <- tcga.predictedITH[match(READ_survival$TCGA_barcode, read.predictedITH$TCGA_barcode), 2]
+READ_survival$ITH <- read.predictedITH[match(READ_survival$TCGA_barcode, read.predictedITH$TCGA_barcode), 2]
 
 # Keep only those samples whose ITH could be predicted
 READ_survival <- READ_survival[!is.na(READ_survival$ITH),]

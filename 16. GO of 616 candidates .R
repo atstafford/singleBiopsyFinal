@@ -9,7 +9,7 @@ GO <- merge(GO, car.info$start.stop)
 GO <- GO[, c('bin','chr','start','stop','CNA','CNA.freq','coeff','pval')]
 
 # load gene list
-GOlist.hg19 <- readRDS("~/Documents/CNA/Github/singleBiopsyITH/Data/hg19.1_all_gene_GO_annotations.rds")
+GOlist.hg19 <- readRDS("~/Documents/CNA/Github/Data/hg19.1_all_gene_GO_annotations.rds")
 GOlist.hg19 <- GOlist.hg19[c(8,11,13,14,15,1)]
 GOlist.hg19 <- GOlist.hg19[!duplicated(GOlist.hg19),]
 
@@ -41,6 +41,7 @@ GO_cand$p.Down.adj = p.adjust(GO_cand$P.Down, method = "fdr")
 GO_cand$p.abs <- apply(GO_cand[,c(8:9)], 1 , min)
 GO_cand$adjsig <- 'insig'
 GO_cand$adjsig[which(GO_cand$p.abs<=0.05)] <- 'sig'
+length(GO_cand$adjsig[which(GO_cand$p.abs<=0.05 )])
 
 # collapse into parent terms
 data <- GO_cand[which(GO_cand$p.abs <= 0.05),]
@@ -55,16 +56,20 @@ parentGO_cand <- parentGO_cand %>% add_row(term = "other", value=NA, fraction = 
 parentGO_cand <- parentGO_cand[which(parentGO_cand$fraction>4),]
 
 plot <- ggplot(parentGO_cand, aes(x=reorder(term, -fraction), y=fraction, fill=term)) +
-  geom_bar(stat="identity", width=0.75) +
+  geom_bar(stat="identity", width=0.75, alpha=0.6, color='black') +
   scale_fill_brewer(palette="Dark2") +
   ylab("% of GO parent terms") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 40)) +
+  coord_flip() +
   theme_custom() +
-  theme(axis.text.x = element_text(size=28, angle=90, hjust=1, vjust=0.4),
-        axis.title.x = element_blank(),
+  theme(
+    #axis.text.y = element_text(size=28, angle=90, hjust=1, vjust=0.4),
+    axis.text.y = element_text(size=28),
+        axis.title.y = element_blank(),
         legend.position = "none")
 
-jpeg('tempfig.jpeg', width = (3*37.795*4.75), height = (3*37.795*7.7))
+#jpeg('tempfig.jpeg', width = (3*37.795*4.75), height = (3*37.795*7.7))
+jpeg('tempfig.jpeg', width = (28), height = (20), units = 'cm', res = 300)
 plot
 dev.off()
 

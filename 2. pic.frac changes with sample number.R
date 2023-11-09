@@ -50,9 +50,10 @@ data$patients <- factor(data$patients, levels = c(1,2,3,4,5,6,7,8,9,10,11))
 
 
 plot <- ggplot(data = data, aes(x = number, y = pic.frac)) +
-  geom_jitter(size=2, shape=21, color="black", fill="#273046", width=0.1, height = 0.01) +
-  facet_grid(patients ~ ., scales = "free_y") +
-  scale_x_continuous(name = "Number of samples used to calculate pic.frac", breaks = seq(1,13,1)) +
+  geom_jitter(size=2.5, shape=21, width=0.2, height = 0.05,fill=alpha("#273046",0.8), color="black") +
+  facet_grid(patients ~ ., space = 'free_y') +
+  scale_x_continuous(name = "Number of samples used to calculate CNAdf", breaks = seq(1,13,1)) +
+  scale_y_continuous(name = "CNAdf",  n.breaks = 3, limits = c(0,0.5)) +
   theme(
     plot.margin=margin(t=0.2,r=0.5,b=0.5,l=0.5,"cm"),
     plot.title = element_text(size=28, colour='black',face='bold', hjust=0),
@@ -63,11 +64,13 @@ plot <- ggplot(data = data, aes(x = number, y = pic.frac)) +
     strip.text.y = element_text(size=28),
     strip.background.y = element_rect(colour = "black", fill=alpha("#6699CC",0.2)),
     panel.border = element_rect(colour = "black", fill=NA),
-    panel.background = element_rect(fill = alpha("#6699CC",0.1), colour = NA, size = 2, linetype = "solid"),
+    panel.background = element_rect(fill = 'white', colour = NA, size = 2, linetype = "solid"),
     panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "grey"),
     panel.grid.minor = element_blank(),
+    panel.spacing = unit(1, "lines"),
     axis.ticks.length=unit(0.2, "cm"))
 
-jpeg('tempfig.jpeg', width = (3*37.795*8.78), height = (3*37.795*8.9))
+#jpeg('tempfig.jpeg', width = (3*37.795*8.78), height = (3*37.795*8.9))
+jpeg('tempfig.jpeg', width = (40), height = (35), units = 'cm', res = 300)
 plot
 dev.off()

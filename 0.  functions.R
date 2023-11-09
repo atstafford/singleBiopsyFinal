@@ -748,18 +748,24 @@ cloFreqPlot <- function(clonalityData, dataInfo, annotation, title=NULL, ylab="F
   return(list(CloFreqDF = CloFreq, plot = fig, legend=galo.legend))
 }
 
-# Function to plot PGA against actual CNA diversity
+# Function to plot AVERAGE PGA against actual CNA diversity
 predictITHfromPGA <- function(diversityData, title=NULL, colourChoice="#273046", toplim, ylab="CNA diversity", xlab="PGA") {
   pga <- diversityData
   pga$sample <- rownames(pga)
   pga$patient <- sub('\\..*', '',rownames(pga))
-  pga <- gather(pga, CNA, proportion, -sample, -patient, -pic.frac)
+  pga <- data.frame(cbind(aggregate(pga$prop.aneu, list(pga$patient), mean),
+        aggregate(pga$pic.frac, list(pga$patient), mean)[2]))
+  colnames(pga) <- c("patient","pga","pic.frac")
+  #pga <- gather(pga, CNA, proportion, -sample, -patient, -pic.frac)
   
-  fig <- ggplot(data=pga[which(pga$CNA=="prop.aneu"),], aes(y=pic.frac, x=proportion)) + 
+  fig <- 
+    #ggplot(data=pga[which(pga$CNA=="prop.aneu"),], aes(y=pic.frac, x=proportion)) + 
+    ggplot(data=pga, aes(y=pic.frac, x=pga)) +
     geom_smooth(method = "lm", formula = y ~ x, color="black", fill=colourChoice) +
-    geom_point(size=3, shape=21, color="black", fill=colourChoice) +
+    #geom_point(size=3, shape=21, color="black", fill=colourChoice) +
+    geom_point(size=5, shape=21, color="black", fill=alpha(colourChoice, 0.9)) +
     ggpmisc::stat_poly_eq(formula = y ~ x, 
-                          aes(label = paste(stat(adj.rr.label), "*\", \"*", stat(p.value.label), "*\"\"", sep = "")),
+                          aes(label = paste(after_stat(adj.rr.label), "*\", \"*", after_stat(p.value.label), "*\"\"", sep = "")),
                           parse = TRUE, label.x = 0, label.y = 'top', size=10, ) +
     ggtitle(title) +
     coord_fixed(ratio=1) +
@@ -767,7 +773,8 @@ predictITHfromPGA <- function(diversityData, title=NULL, colourChoice="#273046",
     scale_x_continuous(xlab, expand = c(0.01,0), limits = c(0,toplim), breaks = c(seq(0,toplim,0.2)), labels = c(seq(0,toplim,0.2))) +
     theme_custom()
   
-  r2 <- lm(pic.frac ~ proportion, data=pga[which(pga$CNA=="prop.aneu"),])
+  #r2 <- lm(pic.frac ~ proportion, data=pga[which(pga$CNA=="prop.aneu"),])
+  r2 <- lm(pic.frac ~ pga, data=pga)
   
   return(list(plot=fig, r2=r2))
 }
@@ -862,7 +869,7 @@ predictITHfromBeta <- function(rawData, dataInfo, predictors, actualITH = NULL, 
     plot <- ggplot(predictedITH, aes(x = actual, y = predicted)) + 
       geom_smooth(method = "lm", formula = y ~ x, color="black", fill=colourChoice) +
       geom_line(aes(group = patient), size=0.2, colour = colourChoice) +
-      geom_point(shape=21, fill = colourChoice, size = 3) +
+      geom_point(shape=21, fill = alpha(colourChoice,0.9), size = 5) +
       geom_line(aes(x = actual, y = actual), linetype = "dashed") +
       ggtitle(title) +
       ylab(ylab) +

@@ -105,7 +105,7 @@ uniReg.out.list <- lapply(uniReg.out.list, function(x) {
 
 # PLOT
 
-# Store the 3 figures in a list
+# Store the 3 figures in a list (sig)
 plot.list <- list()
 
 for ( i in 1:length(uniReg.out.list) ) {
@@ -116,6 +116,32 @@ for ( i in 1:length(uniReg.out.list) ) {
   
   plot.list[[i]] <- ggplot(uniReg.out.list[[i]]) +
     geom_bar(aes(x=bin, y=coeff, fill=factor(sig)), stat="identity", width = 1) + 
+    geom_rect(data=car.info$chr.end, aes(NULL,NULL,xmin=start,xmax=end,fill=col),ymin=-Inf,ymax=Inf,alpha=0.1) + 
+    scale_fill_manual(values = col) + 
+    
+    geom_line(aes(x=bin, y=CNA.freq/3.33), group=1, color='#000033', linetype=1, size=0.7) + 
+    geom_hline(yintercept = 0, size=0.3, color="black") + 
+    
+    ggtitle(tit) +
+    scale_x_continuous(expand = c(0,0), name="chromosome", breaks=car.info$chr.mid, labels = labs) +
+    scale_y_continuous(breaks = c(seq(-0.1,0.3,0.1)), limits = c(-0.14,0.34), 
+                       sec.axis = sec_axis(trans = ~.*3.33)) +
+    
+    theme_custom() +
+    theme(legend.position = "none", axis.title = element_blank()) 
+}
+
+# Store the 3 figures in a list (adjsig)
+plot.list <- list()
+
+for ( i in 1:length(uniReg.out.list) ) {
+  # Set colours for: dark background, insig bars, sig bars, light background
+  if ( i == 1 ) { col <- c("white",alpha("#81A88D", 0.2),"#81A88D","#CCCCCC"); labs <- c(1:18,'\n19','20','\n21','22'); tit <- 'Aneuploidy' } 
+  if ( i == 2 ) { col <- c("white",alpha("#B40F20", 0.2),"#B40F20","#CCCCCC"); labs <- c(1:18,'\n19','20','\n21','22'); tit <- 'Gains only' } 
+  if ( i == 3 ) { col <- c("white",alpha("#046C9A", 0.2),"#046C9A","#CCCCCC"); labs <- c(1:18,'\n19','20','\n21','22'); tit <- 'Losses only' }
+  
+  plot.list[[i]] <- ggplot(uniReg.out.list[[i]]) +
+    geom_bar(aes(x=bin, y=coeff, fill=factor(adjsig)), stat="identity", width = 1) + 
     geom_rect(data=car.info$chr.end, aes(NULL,NULL,xmin=start,xmax=end,fill=col),ymin=-Inf,ymax=Inf,alpha=0.1) + 
     scale_fill_manual(values = col) + 
     
@@ -159,7 +185,8 @@ coeff.plot <- cowplot::plot_grid(coeff.legend,
                                     ncol = 1, align = 'v', rel_heights = c(0.09, 1))
 
 
-jpeg('tempfig.jpeg', width = (3*37.795*13.89), height = (3*37.795*7.87))
+#jpeg('tempfig.jpeg', width = (3*37.795*13.89), height = (3*37.795*7.87))
+jpeg('tempfig.jpeg', width = (40), height = (40), units = 'cm', res = 300)
 coeff.plot
 dev.off()
 

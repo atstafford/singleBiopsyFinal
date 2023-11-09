@@ -55,7 +55,7 @@ plot1 <- ggplot(data=data, aes(x=fct_reorder(regressor, coeff) , y=coeff, fill=c
 
 plot2 <- ggplot(data=data, aes(x=fct_reorder(regressor, coeff) , y=pcSubclonal)) +
   geom_bar(stat="identity", width = 0.5, fill=alpha("#330033",0.5)) +
-  geom_text(aes(label=round(pcSubclonal,1)), nudge_y = 0.15, size=6) +
+  geom_text(aes(label=round(pcSubclonal,1)), nudge_y = 0.15, size=8) +
   scale_y_continuous(name="% subclonal", breaks=c(0,1)) +
   coord_flip() +
   theme_custom() +
@@ -66,7 +66,8 @@ plot2 <- ggplot(data=data, aes(x=fct_reorder(regressor, coeff) , y=pcSubclonal))
 
 plot <- cowplot::plot_grid(plot1, plot2, ncol = 2, align = 'h', rel_widths =c(1, 0.3))
 
-jpeg('tempfig.jpeg', width = (3*37.795*5.92), height = (3*37.795*8))
+#jpeg('tempfig.jpeg', width = (3*37.795*5.92), height = (3*37.795*8))
+jpeg('tempfig.jpeg', width = (33), height = (35), units = 'cm', res = 300)
 plot
 dev.off()
 

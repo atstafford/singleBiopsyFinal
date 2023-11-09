@@ -1,7 +1,7 @@
 # TCGA PROCESSING ####
 
 # Load clinical data for CRC (COAD)
-READ_clinical <- read_excel("~/Documents/CNA/Github/singleBiopsyITH/Data/TCGA/Clinical COAD.xlsx")
+READ_clinical <- read_excel("~/Documents/CNA/Github//Data/TCGA/Clinical COAD.xlsx")
 colnames(READ_clinical)[c(1,2)] <- c("UUID_copyN","TCGA_barcode")
 
 # Remove duplicates
@@ -12,7 +12,7 @@ READ_clinical <- READ_clinical[,colSums(READ_clinical=="'--") < nrow(READ_clinic
 READ_clinical <- READ_clinical[,-c(3,14,15,19,18,20,23,28,32,33)]
 
 # Load additional data and merge
-READ_MSI <- read_excel("~/Documents/CNA/Github/singleBiopsyITH/Data/TCGA/TCGA_MSIstatus.xlsx", col_names = TRUE, skip =1)
+READ_MSI <- read_excel("~/Documents/CNA/Github//Data/TCGA/TCGA_MSIstatus.xlsx", col_names = TRUE, skip =1)
 READ_MSI <- READ_MSI[READ_MSI$Organ=="READ",]
 READ_clinical$MSI <- unlist(READ_MSI[match(READ_clinical$TCGA_barcode, READ_MSI$`TCGA Participant Barcode`), 14])
 READ_clinical$CMS <- unlist(READ_MSI[match(READ_clinical$TCGA_barcode, READ_MSI$`TCGA Participant Barcode`), 27])
@@ -33,7 +33,7 @@ for ( i in 1:nrow(READ_clinical) ) {
 }
 
 # Load TCGA copy number data, and keep only COAD
-READ_copyN <- read.table("~/Documents/CNA/Github/singleBiopsyITH/Data/TCGA/TCGAcn/TCGA_mastercalls.abs_segtabs.fixed.txt", header=T, skip=0, sep="\t")
+READ_copyN <- read.table("~/Documents/CNA/Github//Data/TCGA/TCGAcn/TCGA_mastercalls.abs_segtabs.fixed.txt", header=T, skip=0, sep="\t")
 READ_copyN <- READ_copyN[which((str_sub(READ_copyN$Sample,1,str_length(READ_copyN$Sample)-3)) %in% READ_clinical$TCGA_barcode),c(1:4,9)]
 
 # Remove patients missing CN data
@@ -101,6 +101,21 @@ READbinned.list <- lapply(READbinned.list, function(x) {
   x <- data.frame(apply(x, 2, function(x) as.numeric(as.character(x))), check.names = F)
   x
 })
+
+# collapse into one dataframe
+read.raw <- READbinned.list %>% purrr::reduce(full_join, by = c("chr","start","stop"))
+colnames(read.raw) <- paste(colnames(read.raw), ".", sep = "")
+
+# pull data info, clonality, diversity
+read.info <- PullDataInfo(rawdata = read.raw) # hg19
+
+# Save
+saveRDS(read.raw, "~/Documents/CNA/Github//Data/read.raw.rds")
+saveRDS(READ_clinical, "~/Documents/CNA/Github//Data/READ_clinical.rds")
+saveRDS(read.info, "~/Documents/CNA/Github//Data/read.info.rds")
+
+
+
 
 # collapse into one dataframe
 READbinned.raw <- READbinned.list %>% purrr::reduce(full_join, by = c("chr","start","stop"))

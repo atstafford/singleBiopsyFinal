@@ -107,21 +107,22 @@ training_dijk$patient <- car.info$patientIDs
 DIJKvPICFRAC <- rbind(data.frame(pic.frac=validationCar.diversity$pic.frac$pic.frac, CNH=validation_dijk$CNH, patient=validation_dijk$patient, type="test"),
                       data.frame(pic.frac=car.diversity$pic.frac$pic.frac, CNH=training_dijk$CNH, patient=training_dijk$patient, type="train"))
 
-plot <- ggplot(data = DIJKvPICFRAC, aes(y = pic.frac, x = CNH, color=type)) +
-  geom_smooth(method = 'lm') +
+plot <- ggplot(data = DIJKvPICFRAC[which(DIJKvPICFRAC$type=="train"),], aes(y = pic.frac, x = CNH)) +
+  geom_smooth(method = 'lm', fill="#273046", color="black") +
   ggpmisc::stat_poly_eq(formula = y ~ x, 
                         aes(label = paste(stat(adj.rr.label), "*\", \"*", stat(p.value.label), "*\"\"", sep = "")),
                         parse = TRUE, label.x = 'right', label.y = 'top', size=10) +
-  geom_line(aes(group = patient), size=0.2, colour = "#003366") +
-  geom_point(size = 3) +
+  #geom_line(aes(group = patient), size=0.2, colour = "#003366") +
+  geom_point(size = 5, fill=alpha("#273046",0.9), color="black", shape=21) +
   scale_y_continuous(limits = c(0,0.55), breaks = seq(0,0.4,0.1)) +
   #geom_text_repel(aes(label=patient, size=5), min.segment.length = 0, box.padding = 0.8, nudge_y = 0.001) +
-  scale_color_manual(values = c('#993366',"#333366","#663366")) + 
-  ylab("Actual ITH (pic.frac)") +
-  xlab("Dijk's CNH") +
+  #scale_color_manual(values = c('#993366',"#333366","#663366")) + 
+  ylab("CNA diversity (CNAdf)") +
+  xlab("CNA diversity (Dijk's CNH)") +
   theme_custom()
 
-jpeg('tempfig.jpeg', width = (3*37.795*5.94), height = (3*37.795*5.64))
+#jpeg('tempfig.jpeg', width = (3*37.795*5.94), height = (3*37.795*5.64))
+jpeg('tempfig.jpeg', width = (20), height = (20), units = 'cm', res = 300)
 plot
 dev.off()
 

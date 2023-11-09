@@ -97,12 +97,13 @@ res <- res[order(res$padj),]
 head(res)
 
 # Make a basic volcano plot
-jpeg('tempfig.jpeg', width = 400, height = 400)
+#jpeg('tempfig.jpeg', width = 400, height = 400)
+jpeg('tempfig.jpeg', width = (20), height = (20), units = 'cm', res = 300)
 par(mfrow=c(1,1))
 par(mar=c(5,5,1,1))
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main=NULL, xlim=c(-3,3), cex=1, cex.axis=2, cex.lab=2, cex.main=2))
-with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="blue"))
-with(subset(res, padj<.01 & abs(log2FoldChange)>1.5), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+with(subset(res, padj<.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="blue"))
+with(subset(res, padj<.05 & abs(log2FoldChange)>1.5), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
 dev.off()
 
 # pull sig DE genes

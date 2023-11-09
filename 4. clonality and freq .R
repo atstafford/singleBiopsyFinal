@@ -16,13 +16,15 @@ cor.test(clofreq.ad$CloFreqDF$freq, clofreq.ad$CloFreqDF$pcSubclonal, type = 'pe
 cor.test(clofreq.car$CloFreqDF$freq, clofreq.car$CloFreqDF$pcSubclonal, type = 'pearson')
 cor.test(clofreq.tracerx$CloFreqDF$freq, clofreq.tracerx$CloFreqDF$pcSubclonal, type = 'pearson')
 
+
 # plot adenoma and carincoma together
 ClonalityPlot1 <- cowplot::plot_grid(clofreq.ad$legend,
                                     annotate_figure(plot_grid(clofreq.ad$plot, clofreq.car$plot, ncol = 1),
                                                     left = text_grob('Fraction of patients with CNA', size = 28, rot = 90),
                                                     bottom = text_grob('Chromosome', size = 28, vjust = -1)),
                                     ncol = 1, align = 'v', rel_heights = c(0.08, 1))
-jpeg('tempfig.jpeg', width = 1575, height = 892.34)
+#jpeg('tempfig.jpeg', width = 1575, height = 892.34)
+jpeg('tempfig.jpeg', width = (72), height = (35), units = 'cm', res = 300)
 ClonalityPlot1
 dev.off()
 
@@ -32,7 +34,8 @@ ClonalityPlot2 <- cowplot::plot_grid(clofreq.tracerx$legend,
                                                      left = text_grob('Fraction of patients with CNA', size = 28, rot = 90, hjust=0.4),
                                                      bottom = text_grob('Chromosome', size = 28, vjust = -1)),
                                      ncol = 1, align = 'v', rel_heights = c(0.16, 1))
-jpeg('tempfig.jpeg', width = 1575, height = 460.34)
+#jpeg('tempfig.jpeg', width = 1575, height = 460.34)
+jpeg('tempfig.jpeg', width = (72), height = (20), units = 'cm', res = 300)
 ClonalityPlot2
 dev.off()
 

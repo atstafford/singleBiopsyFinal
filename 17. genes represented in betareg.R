@@ -1,7 +1,7 @@
 # PREREQUISITS: load section 1,7,8,9,11 data 
 
 # load gene list
-GOlist.hg19 <- readRDS("~/Documents/CNA/Github/singleBiopsyITH/Data/hg19.1_all_gene_GO_annotations.rds")
+GOlist.hg19 <- readRDS("~/Documents/CNA/Github/Data/hg19.1_all_gene_GO_annotations.rds")
 GOlist.hg19 <- GOlist.hg19[c(8,11,13,14,15,1)]
 GOlist.hg19 <- GOlist.hg19[!duplicated(GOlist.hg19),]
 
@@ -73,11 +73,11 @@ min(x$no.genes)
 max(x$no.genes)
 
 # load gene lists
-hallmarkGenes <- readRDS('~/Documents/CNA/Github/singleBiopsyITH/Data/GeneLists/hallmarkGenes.rds')
-cosmic <- read_csv('~/Documents/CNA/Github/singleBiopsyITH/Data/GeneLists/COSMIC 11_12_03 2022.csv')
-chromatinGenes <- read.table('~/Documents/CNA/Github/singleBiopsyITH/Data/GeneLists/chromatinGenes', header = T, sep = "\t")
-DNAmodGenes <- read.table('~/Documents/CNA/Github/singleBiopsyITH/Data/GeneLists/DNAmodGenes', header = T, sep = "\t")
-histoneGenes <- read.table('~/Documents/CNA/Github/singleBiopsyITH/Data/GeneLists/histoneGenes', header = T, sep = "\t")
+hallmarkGenes <- readRDS('~/Documents/CNA/Github//Data/GeneLists/hallmarkGenes.rds')
+cosmic <- read_csv('~/Documents/CNA/Github//Data/GeneLists/COSMIC 11_12_03 2022.csv')
+chromatinGenes <- read.table('~/Documents/CNA/Github//Data/GeneLists/chromatinGenes', header = T, sep = "\t")
+DNAmodGenes <- read.table('~/Documents/CNA/Github//Data/GeneLists/DNAmodGenes', header = T, sep = "\t")
+histoneGenes <- read.table('~/Documents/CNA/Github//Data/GeneLists/histoneGenes', header = T, sep = "\t")
 
 # for each cluster, pull genes occurring from gene lists
 GOI.percluster <- list()

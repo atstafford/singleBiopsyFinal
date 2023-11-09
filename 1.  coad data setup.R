@@ -1,7 +1,7 @@
 # TCGA PROCESSING ####
 
 # Load clinical data for CRC (COAD)
-COAD_clinical <- read_excel("~/Documents/CNA/Github/singleBiopsyITH/Data/TCGA/Clinical COAD.xlsx")
+COAD_clinical <- read_excel("~/Documents/CNA/Github//Data/TCGA/Clinical COAD.xlsx")
 colnames(COAD_clinical)[c(1,2)] <- c("UUID_copyN","TCGA_barcode")
 
 # Remove duplicates
@@ -12,7 +12,7 @@ COAD_clinical <- COAD_clinical[,colSums(COAD_clinical=="'--") < nrow(COAD_clinic
 COAD_clinical <- COAD_clinical[,-c(3,14,15,19,18,20,23,28,32,33)]
 
 # Load additional data and merge
-COAD_MSI <- read_excel("~/Documents/CNA/Github/singleBiopsyITH/Data/TCGA/TCGA_MSIstatus.xlsx", col_names = TRUE, skip =1)
+COAD_MSI <- read_excel("~/Documents/CNA/Github//Data/TCGA/TCGA_MSIstatus.xlsx", col_names = TRUE, skip =1)
 COAD_MSI <- COAD_MSI[COAD_MSI$Organ=="COAD",]
 COAD_clinical$MSI <- unlist(COAD_MSI[match(COAD_clinical$TCGA_barcode, COAD_MSI$`TCGA Participant Barcode`), 14])
 COAD_clinical$CMS <- unlist(COAD_MSI[match(COAD_clinical$TCGA_barcode, COAD_MSI$`TCGA Participant Barcode`), 27])
@@ -107,9 +107,15 @@ colnames(coad.raw) <- paste(colnames(coad.raw), ".", sep = "")
 
 # pull data info, clonality, diversity
 coad.info <- PullDataInfo(rawdata = coad.raw) # hg19
+coad.pga <- data.frame(t(coad.raw[,-c(1:3)]), check.names = FALSE)
+coad.pga <- data.frame(prop.gain=apply(coad.pga,1,function(x) sum(x == 3, na.rm = TRUE)/ncol(coad.pga)),
+                  prop.loss=apply(coad.pga,1,function(x) sum(x == 1, na.rm = TRUE)/ncol(coad.pga)))
+coad.pga$prop.aneu <- coad.pga$prop.gain + coad.pga$prop.loss
+coad.pga$patient <- substr(rownames(coad.pga), 1, nchar(rownames(coad.pga))-4)
 
 # Save
 saveRDS(coad.raw, "~/Documents/CNA/Github/singleBiopsyITH/Data/coad.raw.rds")
 saveRDS(COAD_clinical, "~/Documents/CNA/Github/singleBiopsyITH/Data/COAD_clinical.rds")
 saveRDS(coad.info, "~/Documents/CNA/Github/singleBiopsyITH/Data/coad.info.rds")
+saveRDS(coad.pga, "~/Documents/CNA/Github//Data/coad.pga.rds")
 

@@ -51,7 +51,7 @@ for ( i in 1:length(c) ) {
 representitive.bins <- do.call('rbind',list)
 
 # remove bins with overlap (>50%) with telo or centro
-hg19.gaps <- read.csv("~/Documents/CNA/Github/singleBiopsyITH/Data/hg19gap.csv")
+hg19.gaps <- read.csv("~/Documents/CNA/Github/Data/hg19gap.csv")
 hg19.gaps <- hg19.gaps[hg19.gaps$type %in% c('telomere',"centromere"),]
 hg19.gaps <- hg19.gaps[hg19.gaps$chrom %!in% c('chrY','chrX'),]
 representitive.bins$teloCentro <- NA

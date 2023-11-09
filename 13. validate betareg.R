@@ -48,12 +48,13 @@ plot <- ggplot(z, aes(x=unlist.aic2.)) +
   theme(plot.margin=margin(t=0,r=0.5,b=0,l=0,"cm"),
         panel.background = element_blank(),
         axis.line = element_line(colour = "black", size = 0.5),
-        axis.title = element_text(size=24, colour='black'),
-        axis.text = element_text(size=24, colour='black'),
+        axis.title = element_text(size=28, colour='black'),
+        axis.text = element_text(size=28, colour='black'),
         axis.ticks.length=unit(0.2, "cm"),
         legend.position = "none")
 
-jpeg('tempfig.jpeg', width = 400, height = 375)
+#jpeg('tempfig.jpeg', width = 400, height = 375)
+jpeg('tempfig.jpeg', width = (20), height = (20), units = 'cm', res = 300)
 plot
 dev.off()
 

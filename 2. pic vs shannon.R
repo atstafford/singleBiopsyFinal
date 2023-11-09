@@ -120,20 +120,23 @@ labels <- unlist(labels)
 
 plot <- ggplot(data = scores, aes(x=reorder(patient, count) , y=count, group=Metric)) +
   geom_line() +
-  geom_point(size=4, aes(color=Method, shape=Value)) +
+  geom_point(size=5, aes(color=Method, shape=Value)) +
   scale_color_manual(values=c("#F98400", "#660066")) +
-  scale_y_continuous(name="Raw diversity values", 
+  scale_y_continuous(name="Raw diversity values, summed over bins", 
                      sec.axis = sec_axis(trans = ~./800, name="Values as fraction of maximum diversity")) +
   scale_x_discrete(name="Patient (sample number)", labels=labels)+
   scale_linetype_manual(values=c("solid","dotted")) +
   theme_custom() +
   theme(axis.text.y = element_text(size=28, colour='black', hjust=1),
-        axis.text.x = element_text(size=28, colour='black', angle = 90),
+        axis.title.y.right = element_text(size=28, colour='black', vjust=1, hjust=0.2),
+        axis.title.y.left = element_text(size=28, colour='black', vjust=1, hjust=0.8),
+        axis.text.x = element_text(size=28, colour='black', angle = 90, hjust=1),
         legend.position = "top",
         legend.text = element_text(size=28, colour='black'),
         legend.title = element_blank())  
 
-jpeg('tempfig.jpeg', width = (3*37.795*5.94), height = (3*37.795*5.64))
+#jpeg('tempfig.jpeg', width = (3*37.795*5.94), height = (3*37.795*5.64))
+jpeg('tempfig.jpeg', width = (28), height = (20), units = 'cm', res = 300)
 plot
 dev.off()
 

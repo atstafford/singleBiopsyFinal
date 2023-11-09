@@ -30,7 +30,8 @@ hm1 <- cowplot::plot_grid(hm.car$legend,
                                           left = text_grob('Chromosome', size = 28, rot = 90, vjust = 2),
                                           bottom = text_grob('Chromosome', size = 28, vjust = -1)),
                           ncol = 1, align = 'v', rel_heights = c(0.08, 1))
-jpeg('tempfig.jpeg', width = 1028.409, height = 1028.409)
+#jpeg('tempfig.jpeg', width = 1028.409, height = 1028.409)
+jpeg('tempfig.jpeg', width = (40), height = (40), units = 'cm', res = 300)
 hm1
 dev.off()
 
@@ -60,7 +61,8 @@ hm2 <- cowplot::plot_grid(hm.tracerx$legend,
                                           left = text_grob('Chromosome', size = 28, rot = 90, vjust = 2),
                                           bottom = text_grob('Chromosome', size = 28, vjust = -1)),
                           ncol = 1, align = 'v', rel_heights = c(0.08, 1))
-jpeg('tempfig.jpeg', width = 1028.409, height = 1028.409)
+#jpeg('tempfig.jpeg', width = 1028.409, height = 1028.409)
+jpeg('tempfig.jpeg', width = (40), height = (40), units = 'cm', res = 300)
 hm2
 dev.off()
 

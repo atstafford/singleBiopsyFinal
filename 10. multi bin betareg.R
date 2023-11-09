@@ -18,7 +18,7 @@ remove <- attributes(alias(lm(bin_ITH ~ ., data = multiReg.in))$Complete)$dimnam
 multiReg.in <- multiReg.in[ ,colnames(multiReg.in) %!in% remove]
 
 # 51-bin betareg
-betareg_51 <- betareg:betareg(bin_ITH ~., data = multiReg.in)
+betareg_51 <- betareg(bin_ITH ~ ., data = multiReg.in)
 summary(betareg_51, type = "pearson")
 round(AIC(betareg_51),2)
 vif <- data.frame(car::vif(betareg_51))
@@ -46,6 +46,7 @@ while( max(vif$vif.new.model.) >=10 ) {
 betareg_39 <- new.model
 summary(betareg_39, type = "pearson")
 round(AIC(betareg_39),2)
+vif <- data.frame(car::vif(betareg_39))
 #lrtest(betareg_33bin)
 
 # Save

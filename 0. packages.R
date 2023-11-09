@@ -1,4 +1,4 @@
-devtools::install_github("psyteachr/introdataviz")
+#devtools::install_github("psyteachr/introdataviz")
 
 Packages <- c(
               
